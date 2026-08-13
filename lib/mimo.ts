@@ -4,6 +4,7 @@ export interface MimoStats {
   streak: number;
   coins: number;
   sparks: number;
+  username: string | null;
 }
 
 async function authorizedGet(path: string, token: string) {
@@ -31,9 +32,13 @@ export async function fetchMimoStats(token: string): Promise<MimoStats> {
     authorizedGet('/user/coins', token),
   ]);
 
+  const username =
+    settings.username ?? settings.displayName ?? profile.username ?? profile.displayName ?? null;
+
   return {
     streak: profile.activeStreakLength ?? 0,
     sparks: profile.sparks ?? 0,
     coins: coinsData.coins ?? 0,
+    username,
   };
 }
