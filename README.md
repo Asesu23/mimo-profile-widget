@@ -44,7 +44,7 @@ cp .env.example .env.local
 Fill in `.env.local`:
 
 - `WIDGET_ENCRYPTION_KEY` — generate with `openssl rand -base64 32`
-- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — from an Upstash Redis database (run `vercel link` after adding one via the Vercel dashboard and these get pulled automatically)
+- `KV_REST_API_URL` / `KV_REST_API_TOKEN` — added automatically to your Vercel project when you connect the "Upstash for Redis" integration (Storage → Marketplace Database Providers); pull them locally with `vercel env pull .env.local`
 
 ```bash
 npm run dev

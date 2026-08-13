@@ -22,18 +22,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
   }
 
+  let refreshToken: string;
+
   try {
     // The password lives only in this function's memory for this single request.
     // It is never logged and never written to storage. Only the resulting
     // Firebase refresh token is persisted, and only after AES-256-GCM encryption.
-    const { refreshToken } = await signInWithPassword(email, password);
-    const widgetId = randomUUID();
-
-    await saveWidgetToken(widgetId, encrypt(refreshToken));
-
-    return NextResponse.json({ widgetId });
+    const result = await signInWithPassword(email, password);
+    refreshToken = result.refreshToken;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Login failed';
     return NextResponse.json({ error: message }, { status: 401 });
+  }
+
+  try {
+    const widgetId = randomUUID();
+    await saveWidgetToken(widgetId, encrypt(refreshToken));
+    return NextResponse.json({ widgetId });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to store widget token';
+    return NextResponse.json(
+      { error: `Login succeeded, but saving the widget failed: ${message}` },
+      { status: 500 }
+    );
   }
 }
