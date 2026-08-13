@@ -25,7 +25,7 @@ function truncate(value: string, max: number): string {
 // inside a 20x20 viewBox, which silently clipped its right/bottom edge).
 function icon(key: StatKey, color: string, card: string): string {
   if (key === 'streak') {
-    return `<path fill="${color}" d="M10 2c3 4 5 7 5 10.5 0 4-2.5 6.5-5 6.5s-5-2.5-5-6.5C5 9 7 6 10 2z"/>`;
+    return `<path fill="${color}" d="M10 2c3 4 5 7 5 10.5 0 4-2.5 6.5-5 6.5s-5-2.5-5-6.5C5 9 7 6 10 2z"/><path fill="${card}" d="M10 7.5c1.4 1.8 2.3 3.2 2.3 5 0 2-1 3.5-2.3 3.5s-2.3-1.5-2.3-3.5c0-1.8.9-3.2 2.3-5z"/>`;
   }
   if (key === 'coins') {
     return `<circle cx="10" cy="10" r="8.5" fill="${color}"/><text x="10" y="14" text-anchor="middle" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="800" fill="${card}">$</text>`;
@@ -57,8 +57,8 @@ export function buildSvg(stats: MimoStats, theme: WidgetTheme, visibleStats: Sta
     <rect x="0.5" y="0.5" width="${cardWidth - 1}" height="${cardHeight - 1}" rx="18" fill="#FFFFFF12" stroke="${theme.accentFrom}40" stroke-width="1.5" />
     <circle cx="${badgeCx}" cy="${badgeCy}" r="${badgeR}" fill="${theme.accentFrom}26" />
     <svg x="${badgeCx - 10}" y="${badgeCy - 10}" width="20" height="20" viewBox="0 0 20 20">${icon(key, theme.accentFrom, theme.bg)}</svg>
-    <text x="${cardWidth / 2}" y="72" text-anchor="middle" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="700" fill="${theme.text}">${escapeXml(stats[key])}</text>
-    <text x="${cardWidth / 2}" y="89" text-anchor="middle" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="11" fill="${theme.muted}">${STAT_LABEL[key]}</text>
+    <text x="${cardWidth / 2}" y="78" text-anchor="middle" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="700" fill="${theme.text}">${escapeXml(stats[key])}</text>
+    <text x="${cardWidth / 2}" y="95" text-anchor="middle" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="11" fill="${theme.muted}">${STAT_LABEL[key]}</text>
   </g>`;
     })
     .join('\n');
@@ -70,7 +70,7 @@ export function buildSvg(stats: MimoStats, theme: WidgetTheme, visibleStats: Sta
 
   const header = `  <svg x="${paddingX}" y="${avatarY}" width="${avatarWidth.toFixed(1)}" height="${avatarHeight}" viewBox="0 0 140 156">${buildMascot(theme)}</svg>${
     username
-      ? `\n  <text x="${paddingX + avatarWidth + 14}" y="${avatarY + avatarHeight / 2 + 6}" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="18" font-weight="700" fill="${theme.text}">${escapeXml(username)}</text>`
+      ? `\n  <text x="${paddingX + avatarWidth + 20}" y="${avatarY + avatarHeight / 2 + 6}" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="18" font-weight="700" fill="${theme.text}">${escapeXml(username)}</text>`
       : ''
   }`;
 
