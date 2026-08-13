@@ -25,7 +25,7 @@ function truncate(value: string, max: number): string {
 // inside a 20x20 viewBox, which silently clipped its right/bottom edge).
 function icon(key: StatKey, color: string, card: string): string {
   if (key === 'streak') {
-    return `<path fill="${color}" d="M14.403 2.508a.833.833 0 00-1.19-.151 10.824 10.824 0 00-3.933 6.862 8.386 8.386 0 01-1.895-1.906.833.833 0 00-1.28-.092A10 10 0 1017.42 5.038a8.288 8.288 0 01-3.017-2.53zM17.5 15.833a4.167 4.167 0 11-8.125-1.302c.699.517 1.5.9 2.37 1.112a6.657 6.657 0 012.14-3.939 4.167 4.167 0 013.615 4.129z"/>`;
+    return `<path fill="${color}" d="M10 2c3 4 5 7 5 10.5 0 4-2.5 6.5-5 6.5s-5-2.5-5-6.5C5 9 7 6 10 2z"/>`;
   }
   if (key === 'coins') {
     return `<circle cx="10" cy="10" r="8.5" fill="${color}"/><text x="10" y="14" text-anchor="middle" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="800" fill="${card}">$</text>`;
@@ -68,10 +68,11 @@ export function buildSvg(stats: MimoStats, theme: WidgetTheme, visibleStats: Sta
   const avatarY = 16;
   const username = stats.username ? truncate(stats.username, 22) : null;
 
-  const header = username
-    ? `  <svg x="${paddingX}" y="${avatarY}" width="${avatarWidth.toFixed(1)}" height="${avatarHeight}" viewBox="0 0 140 156">${buildMascot(theme)}</svg>
-  <text x="${paddingX + avatarWidth + 14}" y="${avatarY + avatarHeight / 2 + 6}" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="18" font-weight="700" fill="${theme.text}">${escapeXml(username)}</text>`
-    : '';
+  const header = `  <svg x="${paddingX}" y="${avatarY}" width="${avatarWidth.toFixed(1)}" height="${avatarHeight}" viewBox="0 0 140 156">${buildMascot(theme)}</svg>${
+    username
+      ? `\n  <text x="${paddingX + avatarWidth + 14}" y="${avatarY + avatarHeight / 2 + 6}" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="18" font-weight="700" fill="${theme.text}">${escapeXml(username)}</text>`
+      : ''
+  }`;
 
   return `<svg width="${CANVAS_WIDTH}" height="${CANVAS_HEIGHT}" viewBox="0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}" xmlns="http://www.w3.org/2000/svg">
   <defs>

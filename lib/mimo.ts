@@ -33,7 +33,17 @@ export async function fetchMimoStats(token: string): Promise<MimoStats> {
   ]);
 
   const username =
-    settings.username ?? settings.displayName ?? profile.username ?? profile.displayName ?? null;
+    settings.username ??
+    settings.displayName ??
+    settings.name ??
+    settings.nickname ??
+    settings.handle ??
+    profile.username ??
+    profile.displayName ??
+    profile.name ??
+    profile.nickname ??
+    profile.handle ??
+    null;
 
   return {
     streak: profile.activeStreakLength ?? 0,
