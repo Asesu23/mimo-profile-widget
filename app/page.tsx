@@ -11,28 +11,26 @@ const STRINGS: Record<Locale, Record<string, string>> = {
   en: {
     badge: 'unofficial · read-only',
     title: 'Mimo Profile Widget',
-    subtitle: 'A live streak / XP / coins badge for your GitHub README, generated from your Mimo account.',
-    emailLabel: 'Mimo email',
-    passwordLabel: 'Mimo password',
-    passwordNote: 'Your password is used once to sign in and is never stored or logged. Only an encrypted refresh token is kept, which you can revoke at any time. See',
-    howItWorksLink: 'how this works',
+    subtitle: 'Streak, XP and coins — live, in your README.',
+    emailLabel: 'Email',
+    passwordLabel: 'Password',
+    passwordNote: 'Used once, never stored.',
+    howItWorks: 'How it works',
+    step1: 'Password → sent once, over HTTPS',
+    step2: 'Discarded → only an encrypted refresh token is kept',
+    step3: 'Public URL → holds no secrets, decrypts server-side on each view',
+    step4: 'Disconnect anytime to delete the stored token',
     connect: 'Connect account',
     connecting: 'Connecting…',
     customize: 'Customize',
     theme: 'Theme',
-    statsToShow: 'Stats to show',
+    statsToShow: 'Stats',
     imageUrl: 'Image URL',
     readmeMarkdown: 'README markdown',
     copy: 'Copy',
     copied: 'Copied',
-    disconnect: 'Disconnect and delete stored token',
-    howItWorksTitle: 'How this works',
-    step1: 'password → sent once, over HTTPS, to sign in',
-    step2: 'password → discarded · refresh token → AES-256-GCM encrypted',
-    step3: 'encrypted token → stored, keyed by a random widget id',
-    step4: '/api/widget/<id> → decrypts, refreshes, renders svg, no secrets in the url',
-    footerNote:
-      'Mimo has no public API for this data, so this project authenticates the same way the official web app does. It is not affiliated with or endorsed by Mimo. Use at your own discretion — see the repository README for the full security notes.',
+    disconnect: 'Disconnect',
+    footerNote: 'Unofficial, not affiliated with Mimo. Full security notes in the repo README.',
     statStreak: 'Streak',
     statCoins: 'Coins',
     statXp: 'XP',
@@ -40,29 +38,26 @@ const STRINGS: Record<Locale, Record<string, string>> = {
   ru: {
     badge: 'неофициально · только чтение',
     title: 'Mimo Profile Widget',
-    subtitle: 'Живой бейдж со стриком, XP и монетами для GitHub README, на основе твоего аккаунта Mimo.',
-    emailLabel: 'Email от Mimo',
-    passwordLabel: 'Пароль от Mimo',
-    passwordNote:
-      'Пароль используется один раз для входа и никогда не сохраняется и не логируется. Хранится только зашифрованный refresh-токен, который можно отозвать в любой момент. Подробнее —',
-    howItWorksLink: 'как это работает',
-    connect: 'Подключить аккаунт',
+    subtitle: 'Стрик, XP и монеты — живые, прямо в README.',
+    emailLabel: 'Email',
+    passwordLabel: 'Пароль',
+    passwordNote: 'Используется один раз, не сохраняется.',
+    howItWorks: 'Как это работает',
+    step1: 'Пароль → отправляется один раз, по HTTPS',
+    step2: 'Удаляется → остаётся только зашифрованный refresh-токен',
+    step3: 'Публичная ссылка → без секретов, расшифровка на сервере при каждом просмотре',
+    step4: 'Можно отключить в любой момент — токен удалится',
+    connect: 'Подключить',
     connecting: 'Подключаем…',
     customize: 'Настройка',
     theme: 'Тема',
-    statsToShow: 'Какие статы показывать',
-    imageUrl: 'Ссылка на картинку',
-    readmeMarkdown: 'Markdown для README',
-    copy: 'Скопировать',
+    statsToShow: 'Статы',
+    imageUrl: 'Ссылка',
+    readmeMarkdown: 'Markdown',
+    copy: 'Копировать',
     copied: 'Скопировано',
-    disconnect: 'Отключить и удалить токен',
-    howItWorksTitle: 'Как это работает',
-    step1: 'пароль → отправляется один раз, по HTTPS, для входа',
-    step2: 'пароль → удаляется · refresh-токен → шифруется AES-256-GCM',
-    step3: 'зашифрованный токен → сохраняется, привязан к случайному id виджета',
-    step4: '/api/widget/<id> → расшифровывает, обновляет, рендерит svg, в ссылке нет секретов',
-    footerNote:
-      'У Mimo нет публичного API для этих данных, поэтому проект авторизуется так же, как официальное веб-приложение. Проект не аффилирован с Mimo и не одобрен им. Используй на свой страх и риск — подробности по безопасности в README репозитория.',
+    disconnect: 'Отключить',
+    footerNote: 'Неофициальный проект, не связан с Mimo. Все детали безопасности — в README репозитория.',
     statStreak: 'Стрик',
     statCoins: 'Монеты',
     statXp: 'XP',
@@ -153,145 +148,119 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-surface px-6 py-16">
-      <div className="mx-auto flex max-w-xl flex-col gap-12">
+    <main className="relative min-h-screen overflow-hidden bg-surface px-6 py-16">
+      <div
+        className="pointer-events-none absolute -right-40 -top-40 h-[480px] w-[480px] rounded-full opacity-20 blur-[120px]"
+        style={{ background: 'radial-gradient(circle, #D946EF, transparent 70%)' }}
+      />
+
+      <div className="relative mx-auto flex max-w-lg flex-col gap-8">
         <header className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-2">
-            <span className="font-mono text-xs uppercase tracking-[0.2em] text-accent">{t('badge')}</span>
-            <h1 className="text-3xl font-bold text-white">{t('title')}</h1>
-            <p className="text-sm text-neutral-400">{t('subtitle')}</p>
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent">{t('badge')}</span>
+            <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>
+            <p className="text-sm text-neutral-500">{t('subtitle')}</p>
           </div>
           <button
             type="button"
             onClick={() => setLocale((current) => (current === 'en' ? 'ru' : 'en'))}
-            className="shrink-0 rounded-lg border border-surface-border px-3 py-1.5 text-xs font-medium text-neutral-300 hover:border-accent hover:text-accent"
+            className="shrink-0 rounded-full border border-surface-border px-3 py-1 font-mono text-[11px] text-neutral-400 hover:border-accent hover:text-accent"
           >
             {locale === 'en' ? 'RU' : 'EN'}
           </button>
         </header>
 
         {status !== 'connected' && (
-          <form onSubmit={handleConnect} className="flex flex-col gap-4 rounded-2xl border border-surface-border bg-surface-card p-6">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="email" className="text-xs font-medium text-neutral-400">
-                {t('emailLabel')}
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="rounded-lg border border-surface-border bg-surface px-3 py-2 text-sm text-white outline-none focus:border-accent"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="password" className="text-xs font-medium text-neutral-400">
-                {t('passwordLabel')}
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className="rounded-lg border border-surface-border bg-surface px-3 py-2 text-sm text-white outline-none focus:border-accent"
-                placeholder="••••••••"
-              />
-            </div>
-
-            <p className="text-xs leading-relaxed text-neutral-500">
-              {t('passwordNote')}{' '}
-              <a href="#how-it-works" className="text-accent underline">
-                {t('howItWorksLink')}
-              </a>
-              .
-            </p>
+          <form onSubmit={handleConnect} className="flex flex-col gap-3 rounded-2xl border border-surface-border bg-surface-card p-5">
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className="rounded-xl border border-surface-border bg-surface px-3.5 py-2.5 text-sm text-white outline-none focus:border-accent"
+              placeholder={t('emailLabel')}
+            />
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              className="rounded-xl border border-surface-border bg-surface px-3.5 py-2.5 text-sm text-white outline-none focus:border-accent"
+              placeholder={t('passwordLabel')}
+            />
 
             {errorMessage && <p className="text-xs text-red-400">{errorMessage}</p>}
 
             <button
               type="submit"
               disabled={status === 'connecting'}
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-soft hover:text-surface disabled:opacity-50"
+              className="rounded-xl bg-accent py-2.5 text-sm font-semibold text-white transition hover:bg-accent-soft hover:text-surface disabled:opacity-50"
             >
               {status === 'connecting' ? t('connecting') : t('connect')}
             </button>
+
+            <p className="text-center text-[11px] text-neutral-600">{t('passwordNote')}</p>
+
+            <details className="group mt-1 text-xs text-neutral-500">
+              <summary className="cursor-pointer select-none list-none text-accent/80 hover:text-accent">
+                {t('howItWorks')}
+              </summary>
+              <ul className="mt-2 flex flex-col gap-1.5 border-l border-surface-border pl-3 font-mono text-[11px] leading-relaxed">
+                <li>{t('step1')}</li>
+                <li>{t('step2')}</li>
+                <li>{t('step3')}</li>
+                <li>{t('step4')}</li>
+              </ul>
+            </details>
           </form>
         )}
 
         {status === 'connected' && widgetId && (
-          <section className="flex flex-col gap-6 rounded-2xl border border-surface-border bg-surface-card p-6">
-            <img src={imageUrl} alt="Mimo stats preview" className="w-full max-w-[600px]" />
+          <section className="flex flex-col gap-5 rounded-2xl border border-surface-border bg-surface-card p-5">
+            <img src={imageUrl} alt="Mimo stats preview" className="w-full rounded-xl" />
 
-            <div className="flex flex-col gap-3">
-              <span className="text-xs font-medium text-neutral-400">{t('customize')}</span>
-
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[11px] text-neutral-500">{t('theme')}</span>
-                <div className="flex flex-wrap gap-2">
-                  {Object.values(THEMES).map((theme) => (
-                    <button
-                      key={theme.id}
-                      type="button"
-                      onClick={() => setThemeId(theme.id)}
-                      title={theme.name}
-                      className="h-7 w-7 rounded-full border-2 transition"
-                      style={{
-                        background: `linear-gradient(135deg, ${theme.accentFrom}, ${theme.accentTo})`,
-                        borderColor: themeId === theme.id ? theme.accentFrom : 'transparent',
-                        boxShadow: themeId === theme.id ? '0 0 0 2px rgba(255,255,255,0.15)' : 'none',
-                      }}
-                    />
-                  ))}
-                </div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                {Object.values(THEMES).map((theme) => (
+                  <button
+                    key={theme.id}
+                    type="button"
+                    onClick={() => setThemeId(theme.id)}
+                    title={theme.name}
+                    className="h-6 w-6 rounded-full border-2 transition"
+                    style={{
+                      background: `linear-gradient(135deg, ${theme.accentFrom}, ${theme.accentTo})`,
+                      borderColor: themeId === theme.id ? '#FFFFFF' : 'transparent',
+                    }}
+                  />
+                ))}
               </div>
 
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[11px] text-neutral-500">{t('statsToShow')}</span>
-                <div className="flex gap-4">
-                  {ALL_STATS.map((key) => (
-                    <label key={key} className="flex items-center gap-1.5 text-xs text-neutral-300">
-                      <input
-                        type="checkbox"
-                        checked={visibleStats.includes(key)}
-                        onChange={() => toggleStat(key)}
-                        className="accent-accent"
-                      />
-                      {t(STAT_LABEL_KEY[key])}
-                    </label>
-                  ))}
-                </div>
+              <div className="flex items-center gap-3">
+                {ALL_STATS.map((key) => (
+                  <label key={key} className="flex items-center gap-1 text-[11px] text-neutral-400">
+                    <input
+                      type="checkbox"
+                      checked={visibleStats.includes(key)}
+                      onChange={() => toggleStat(key)}
+                      className="h-3 w-3 accent-accent"
+                    />
+                    {t(STAT_LABEL_KEY[key])}
+                  </label>
+                ))}
               </div>
             </div>
 
             <Field label={t('imageUrl')} value={imageUrl} onCopy={() => copyToClipboard(imageUrl, 'image')} copied={copied === 'image'} copyLabel={t('copy')} copiedLabel={t('copied')} />
             <Field label={t('readmeMarkdown')} value={markdown} onCopy={() => copyToClipboard(markdown, 'markdown')} copied={copied === 'markdown'} copyLabel={t('copy')} copiedLabel={t('copied')} />
 
-            <button
-              type="button"
-              onClick={handleDisconnect}
-              className="self-start text-xs text-red-400 underline decoration-dotted"
-            >
+            <button type="button" onClick={handleDisconnect} className="self-start text-[11px] text-red-400/80 hover:text-red-400">
               {t('disconnect')}
             </button>
           </section>
         )}
 
-        {status !== 'connected' && (
-          <section id="how-it-works" className="flex flex-col gap-4">
-            <h2 className="text-sm font-semibold text-white">{t('howItWorksTitle')}</h2>
-            <div className="flex flex-col gap-2 rounded-2xl border border-surface-border bg-surface-card p-6 font-mono text-xs text-neutral-400">
-              <FlowStep step="1" text={t('step1')} />
-              <FlowStep step="2" text={t('step2')} />
-              <FlowStep step="3" text={t('step3')} />
-              <FlowStep step="4" text={t('step4')} last />
-            </div>
-            <p className="text-xs text-neutral-500">{t('footerNote')}</p>
-          </section>
-        )}
+        <p className="text-center text-[11px] text-neutral-600">{t('footerNote')}</p>
       </div>
     </main>
   );
@@ -313,32 +282,20 @@ function Field({
   copiedLabel: string;
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-xs font-medium text-neutral-400">{label}</span>
+    <div className="flex flex-col gap-1">
+      <span className="text-[11px] font-medium text-neutral-500">{label}</span>
       <div className="flex items-center gap-2">
-        <code className="flex-1 truncate rounded-lg border border-surface-border bg-surface px-3 py-2 text-xs text-neutral-300">
+        <code className="flex-1 truncate rounded-lg border border-surface-border bg-surface px-3 py-2 text-[11px] text-neutral-400">
           {value}
         </code>
         <button
           type="button"
           onClick={onCopy}
-          className="rounded-lg border border-surface-border px-3 py-2 text-xs text-neutral-300 hover:border-accent hover:text-accent"
+          className="shrink-0 rounded-lg border border-surface-border px-2.5 py-2 text-[11px] text-neutral-400 hover:border-accent hover:text-accent"
         >
           {copied ? copiedLabel : copyLabel}
         </button>
       </div>
-    </div>
-  );
-}
-
-function FlowStep({ step, text, last }: { step: string; text: string; last?: boolean }) {
-  return (
-    <div className="flex items-start gap-3">
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-accent text-[10px] text-accent">
-        {step}
-      </span>
-      <span>{text}</span>
-      {!last && <span className="ml-auto text-accent">↓</span>}
     </div>
   );
 }
