@@ -1,11 +1,6 @@
-const API_ORIGIN = 'https://api.mimo.org/v1';
+import type { MimoStats } from '../model/types';
 
-export interface MimoStats {
-  streak: number;
-  coins: number;
-  sparks: number;
-  username: string | null;
-}
+const API_ORIGIN = 'https://api.mimo.org/v1';
 
 async function authorizedGet(path: string, token: string) {
   const response = await fetch(`${API_ORIGIN}${path}`, {

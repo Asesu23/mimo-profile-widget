@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { deleteWidgetToken } from '@/lib/store';
+import { deleteWidgetToken } from '@entities/widget-token';
 
 export const runtime = 'nodejs';
 

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { decrypt } from '@/lib/crypto';
-import { loadWidgetToken } from '@/lib/store';
-import { refreshIdToken } from '@/lib/firebase';
-import { fetchMimoStats } from '@/lib/mimo';
-import { buildSvg, ALL_STATS, type StatKey } from '@/lib/svg';
-import { resolveTheme } from '@/lib/themes';
+import { decrypt, loadWidgetToken } from '@entities/widget-token';
+import { refreshIdToken } from '@shared/api/firebase';
+import { fetchMimoStats, getCachedStats, setCachedStats } from '@entities/mimo-stats';
+import { buildSvg } from '@shared/lib/svg/buildSvg';
+import { ALL_STATS, type StatKey } from '@entities/widget-stat';
+import { resolveTheme } from '@entities/widget-theme';
 
 export const runtime = 'nodejs';
 
@@ -27,9 +27,15 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   const visibleStats = parseVisibleStats(searchParams.get('stats'));
 
   try {
-    const refreshToken = decrypt(encryptedRefreshToken);
-    const idToken = await refreshIdToken(refreshToken);
-    const stats = await fetchMimoStats(idToken);
+    let stats = await getCachedStats(params.id);
+
+    if (!stats) {
+      const refreshToken = decrypt(encryptedRefreshToken);
+      const idToken = await refreshIdToken(refreshToken);
+      stats = await fetchMimoStats(idToken);
+      await setCachedStats(params.id, stats);
+    }
+
     const svg = buildSvg(stats, theme, visibleStats);
 
     return new NextResponse(svg, {

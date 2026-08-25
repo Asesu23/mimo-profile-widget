@@ -1,10 +1,7 @@
-import type { MimoStats } from './mimo';
-import type { WidgetTheme } from './themes';
-import { buildMascot } from './mascot';
-
-export type StatKey = 'streak' | 'coins' | 'sparks';
-
-export const ALL_STATS: StatKey[] = ['streak', 'coins', 'sparks'];
+import type { MimoStats } from '@entities/mimo-stats';
+import type { WidgetTheme } from '@entities/widget-theme';
+import { buildMascot } from '@entities/mascot';
+import { ALL_STATS, STAT_ICON_VIEWBOX, STREAK_ICON_PATH, SPARKS_ICON_PATH, type StatKey } from '@entities/widget-stat';
 
 const CANVAS_WIDTH = 600;
 const CANVAS_HEIGHT = 210;
@@ -20,16 +17,14 @@ function truncate(value: string, max: number): string {
   return value.length > max ? `${value.slice(0, max - 1)}…` : value;
 }
 
-// All icons share a single 20x20 coordinate system so none of them can render
-// outside their allotted box.
 function icon(key: StatKey, color: string, card: string): string {
   if (key === 'streak') {
-    return `<path fill="${color}" d="M10 2c3 4 5 7 5 10.5 0 4-2.5 6.5-5 6.5s-5-2.5-5-6.5C5 9 7 6 10 2z"/><path fill="${card}" d="M10 7.5c1.4 1.8 2.3 3.2 2.3 5 0 2-1 3.5-2.3 3.5s-2.3-1.5-2.3-3.5c0-1.8.9-3.2 2.3-5z"/>`;
+    return `<path fill="${color}" d="${STREAK_ICON_PATH}"/>`;
   }
   if (key === 'coins') {
     return `<circle cx="10" cy="10" r="8.5" fill="${color}"/><text x="10" y="14" text-anchor="middle" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="800" fill="${card}">$</text>`;
   }
-  return `<path fill="${color}" d="M13.315 2.119a.833.833 0 00-1.436-.73l-9.445 10.556a.833.833 0 00.622 1.388h7.302l-1.45 6.77a.833.833 0 001.435.73l9.446-10.556a.833.833 0 00-.622-1.388h-7.302l1.45-6.77z"/>`;
+  return `<path fill="${color}" d="${SPARKS_ICON_PATH}"/>`;
 }
 
 const STAT_LABEL: Record<StatKey, string> = {
@@ -55,7 +50,7 @@ export function buildSvg(stats: MimoStats, theme: WidgetTheme, visibleStats: Sta
       return `  <g transform="translate(${x}, ${cardY})">
     <rect x="0.5" y="0.5" width="${cardWidth - 1}" height="${cardHeight - 1}" rx="18" fill="#FFFFFF12" stroke="${theme.accentFrom}40" stroke-width="1.5" />
     <circle cx="${badgeCx}" cy="${badgeCy}" r="${badgeR}" fill="${theme.accentFrom}26" />
-    <svg x="${badgeCx - 10}" y="${badgeCy - 10}" width="20" height="20" viewBox="0 0 20 20">${icon(key, theme.accentFrom, theme.bg)}</svg>
+    <svg x="${badgeCx - 10}" y="${badgeCy - 10}" width="20" height="20" viewBox="${STAT_ICON_VIEWBOX[key]}">${icon(key, theme.accentFrom, theme.bg)}</svg>
     <text x="${cardWidth / 2}" y="78" text-anchor="middle" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="700" fill="${theme.text}">${escapeXml(stats[key])}</text>
     <text x="${cardWidth / 2}" y="95" text-anchor="middle" font-family="'Segoe UI', ui-sans-serif, system-ui, sans-serif" font-size="11" fill="${theme.muted}">${STAT_LABEL[key]}</text>
   </g>`;

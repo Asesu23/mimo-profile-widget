@@ -16,7 +16,7 @@ Mimo doesn't have a public API the way Duolingo does, so there's no way to pull 
 2. The server exchanges your credentials for a Firebase `idToken` and `refreshToken`. The password is discarded immediately after this single request — it is never logged or stored anywhere.
 3. Only the `refreshToken` is persisted, and only after AES-256-GCM encryption at rest.
 4. You get back a public URL (`/api/widget/<id>`) with no credentials or secrets in it — that's what goes in your README.
-5. Each time that URL is fetched, the server decrypts the stored token, exchanges it for a fresh `idToken` (no password involved), pulls your stats, and renders the SVG. Responses are cached for 30 minutes to avoid hammering Mimo's API.
+5. Each time that URL is fetched, the server looks up your stats. A fresh copy is pulled from Mimo (and cached for 5 minutes) only when there's no recent one — switching the theme or the visible stats reuses the cached data instead of re-authenticating against Mimo, so the preview updates instantly. Responses are additionally cached at the HTTP layer for 30 minutes.
 6. A **Disconnect** button on the site deletes the stored token permanently.
 
 ### Honest limitations
@@ -27,10 +27,27 @@ Mimo doesn't have a public API the way Duolingo does, so there's no way to pull 
 
 ## Tech stack
 
-- **Next.js 14** (App Router, TypeScript) — form, API routes, SVG rendering
-- **Upstash Redis** — encrypted token storage
+- **Next.js 14** (App Router, TypeScript) — routing, API routes, SVG rendering
+- **Feature-Sliced Design** — the application code under `src/` is layered (`entities` → `features` → `widgets` → `pages`), keeping domain logic, UI composition, and Next.js routing cleanly separated
+- **Upstash Redis** — encrypted token storage and short-lived stats cache
 - **Node's built-in `crypto`** — AES-256-GCM encryption at rest
 - **Firebase Identity Platform** — the same auth backend Mimo's web app uses
+
+## Architecture
+
+Next.js owns routing only — `app/` holds thin route handlers and the root layout, nothing else. All application logic lives in `src/`, organized as Feature-Sliced Design layers:
+
+```
+src/
+  app/        global styles
+  pages/      composes widgets into the single page
+  widgets/    self-contained UI blocks (connect form, widget preview, widget links)
+  features/   user actions (connect/disconnect account, toggle a theme or stat, copy to clipboard)
+  entities/   domain building blocks (widget theme, widget stats, stat icons, mascot, token storage)
+  shared/     framework-agnostic building blocks (i18n, SVG builder, Redis/Firebase clients, UI primitives)
+```
+
+Each slice exposes a single public entry point (`index.ts`), and imports only flow downward — `pages` can import `widgets`, `features`, and `entities`, but never the other way around. Path aliases (`@pages/*`, `@widgets/*`, `@features/*`, `@entities/*`, `@shared/*`) map directly onto this structure.
 
 ## Setup
 

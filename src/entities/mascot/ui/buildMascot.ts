@@ -1,4 +1,4 @@
-import type { WidgetTheme } from './themes';
+import type { WidgetTheme } from '@entities/widget-theme';
 
 export function buildMascot(theme: WidgetTheme): string {
   const shell = '#F4F3F8';

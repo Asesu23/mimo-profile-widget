@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
-import { signInWithPassword } from '@/lib/firebase';
-import { encrypt } from '@/lib/crypto';
-import { saveWidgetToken } from '@/lib/store';
+import { signInWithPassword } from '@shared/api/firebase';
+import { encrypt, saveWidgetToken } from '@entities/widget-token';
 
 export const runtime = 'nodejs';
 
@@ -25,9 +24,6 @@ export async function POST(request: NextRequest) {
   let refreshToken: string;
 
   try {
-    // The password lives only in this function's memory for this single request.
-    // It is never logged and never written to storage. Only the resulting
-    // Firebase refresh token is persisted, and only after AES-256-GCM encryption.
     const result = await signInWithPassword(email, password);
     refreshToken = result.refreshToken;
   } catch (error) {
