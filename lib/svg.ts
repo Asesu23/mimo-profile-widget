@@ -21,8 +21,7 @@ function truncate(value: string, max: number): string {
 }
 
 // All icons share a single 20x20 coordinate system so none of them can render
-// outside their allotted box (the earlier coin icon used 24-unit coordinates
-// inside a 20x20 viewBox, which silently clipped its right/bottom edge).
+// outside their allotted box.
 function icon(key: StatKey, color: string, card: string): string {
   if (key === 'streak') {
     return `<path fill="${color}" d="M10 2c3 4 5 7 5 10.5 0 4-2.5 6.5-5 6.5s-5-2.5-5-6.5C5 9 7 6 10 2z"/><path fill="${card}" d="M10 7.5c1.4 1.8 2.3 3.2 2.3 5 0 2-1 3.5-2.3 3.5s-2.3-1.5-2.3-3.5c0-1.8.9-3.2 2.3-5z"/>`;

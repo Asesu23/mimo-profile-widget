@@ -13,13 +13,11 @@ Mimo doesn't have a public API the way Duolingo does, so there's no way to pull 
 ## How it works
 
 1. You sign in once through the form on the deployed site (email + password, sent once over HTTPS).
-2. The server exchanges your credentials for a Firebase `idToken` and `refreshToken`. **The password is discarded immediately after this single request — it is never logged or stored anywhere.**
+2. The server exchanges your credentials for a Firebase `idToken` and `refreshToken`. The password is discarded immediately after this single request — it is never logged or stored anywhere.
 3. Only the `refreshToken` is persisted, and only after AES-256-GCM encryption at rest.
 4. You get back a public URL (`/api/widget/<id>`) with no credentials or secrets in it — that's what goes in your README.
 5. Each time that URL is fetched, the server decrypts the stored token, exchanges it for a fresh `idToken` (no password involved), pulls your stats, and renders the SVG. Responses are cached for 30 minutes to avoid hammering Mimo's API.
 6. A **Disconnect** button on the site deletes the stored token permanently.
-
-This is the same trust model used by "connect your account" integrations generally: the service never sees your password more than once, and what it *does* retain is both encrypted and revocable.
 
 ### Honest limitations
 

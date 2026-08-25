@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { THEMES, DEFAULT_THEME_ID } from '@/lib/themes';
+import { buildMascot } from '@/lib/mascot';
 import { ALL_STATS, type StatKey } from '@/lib/svg';
 
 type Status = 'idle' | 'connecting' | 'connected' | 'error';
@@ -9,12 +10,10 @@ type Locale = 'en' | 'ru';
 
 const STRINGS: Record<Locale, Record<string, string>> = {
   en: {
-    badge: 'unofficial · read-only',
     title: 'Mimo Profile Widget',
-    subtitle: 'Streak, XP and coins — live, in your README.',
+    subtitle: 'Streak, XP and coins - live, in your README.',
     emailLabel: 'Email',
     passwordLabel: 'Password',
-    passwordNote: 'Used once, never stored.',
     howItWorks: 'How it works',
     step1: 'Password → sent once, over HTTPS',
     step2: 'Discarded → only an encrypted refresh token is kept',
@@ -22,7 +21,6 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     step4: 'Disconnect anytime to delete the stored token',
     connect: 'Connect account',
     connecting: 'Connecting…',
-    customize: 'Customize',
     theme: 'Theme',
     statsToShow: 'Stats',
     imageUrl: 'Image URL',
@@ -30,18 +28,15 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     copy: 'Copy',
     copied: 'Copied',
     disconnect: 'Disconnect',
-    footerNote: 'Unofficial, not affiliated with Mimo. Full security notes in the repo README.',
     statStreak: 'Streak',
     statCoins: 'Coins',
     statXp: 'XP',
   },
   ru: {
-    badge: 'неофициально · только чтение',
     title: 'Mimo Profile Widget',
-    subtitle: 'Стрик, XP и монеты — живые, прямо в README.',
+    subtitle: 'Стрик, XP и монеты - живые, прямо в README.',
     emailLabel: 'Email',
     passwordLabel: 'Пароль',
-    passwordNote: 'Используется один раз, не сохраняется.',
     howItWorks: 'Как это работает',
     step1: 'Пароль → отправляется один раз, по HTTPS',
     step2: 'Удаляется → остаётся только зашифрованный refresh-токен',
@@ -49,7 +44,6 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     step4: 'Можно отключить в любой момент — токен удалится',
     connect: 'Подключить',
     connecting: 'Подключаем…',
-    customize: 'Настройка',
     theme: 'Тема',
     statsToShow: 'Статы',
     imageUrl: 'Ссылка',
@@ -57,7 +51,6 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     copy: 'Копировать',
     copied: 'Скопировано',
     disconnect: 'Отключить',
-    footerNote: 'Неофициальный проект, не связан с Mimo. Все детали безопасности — в README репозитория.',
     statStreak: 'Стрик',
     statCoins: 'Монеты',
     statXp: 'XP',
@@ -69,6 +62,31 @@ const STAT_LABEL_KEY: Record<StatKey, string> = {
   coins: 'statCoins',
   sparks: 'statXp',
 };
+
+function ChipIcon({ statKey, className }: { statKey: StatKey; className?: string }) {
+  if (statKey === 'streak') {
+    return (
+      <svg viewBox="0 0 20 20" className={className}>
+        <path fill="currentColor" d="M10 2c3 4 5 7 5 10.5 0 4-2.5 6.5-5 6.5s-5-2.5-5-6.5C5 9 7 6 10 2z" />
+      </svg>
+    );
+  }
+  if (statKey === 'coins') {
+    return (
+      <svg viewBox="0 0 20 20" className={className}>
+        <circle cx="10" cy="10" r="8" fill="currentColor" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 20 20" className={className}>
+      <path
+        fill="currentColor"
+        d="M13.315 2.119a.833.833 0 00-1.436-.73l-9.445 10.556a.833.833 0 00.622 1.388h7.302l-1.45 6.77a.833.833 0 001.435.73l9.446-10.556a.833.833 0 00-.622-1.388h-7.302l1.45-6.77z"
+      />
+    </svg>
+  );
+}
 
 export default function HomePage() {
   const [locale, setLocale] = useState<Locale>('en');
@@ -85,6 +103,7 @@ export default function HomePage() {
   const [visibleStats, setVisibleStats] = useState<StatKey[]>(ALL_STATS);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const activeTheme = THEMES[themeId] ?? THEMES[DEFAULT_THEME_ID];
 
   const imageUrl = useMemo(() => {
     if (!widgetId) return '';
@@ -154,12 +173,14 @@ export default function HomePage() {
         style={{ background: 'radial-gradient(circle, #D946EF, transparent 70%)' }}
       />
 
-      <div className="relative mx-auto flex max-w-lg flex-col gap-8">
+      <div className="relative mx-auto flex w-full max-w-4xl flex-col gap-8">
         <header className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-2">
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent">{t('badge')}</span>
-            <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>
-            <p className="text-sm text-neutral-500">{t('subtitle')}</p>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 shrink-0" dangerouslySetInnerHTML={{ __html: buildMascot(activeTheme) }} />
+            <div className="flex flex-col gap-1">
+              <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>
+              <p className="text-sm text-neutral-500">{t('subtitle')}</p>
+            </div>
           </div>
           <button
             type="button"
@@ -171,96 +192,113 @@ export default function HomePage() {
         </header>
 
         {status !== 'connected' && (
-          <form onSubmit={handleConnect} className="flex flex-col gap-3 rounded-2xl border border-surface-border bg-surface-card p-5">
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="rounded-xl border border-surface-border bg-surface px-3.5 py-2.5 text-sm text-white outline-none focus:border-accent"
-              placeholder={t('emailLabel')}
-            />
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="rounded-xl border border-surface-border bg-surface px-3.5 py-2.5 text-sm text-white outline-none focus:border-accent"
-              placeholder={t('passwordLabel')}
-            />
+          <div className="mx-auto w-full max-w-lg">
+            <form onSubmit={handleConnect} className="flex flex-col gap-3 rounded-2xl border border-surface-border bg-surface-card p-5">
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                className="rounded-xl border border-surface-border bg-surface px-3.5 py-2.5 text-sm text-white outline-none focus:border-accent"
+                placeholder={t('emailLabel')}
+              />
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                className="rounded-xl border border-surface-border bg-surface px-3.5 py-2.5 text-sm text-white outline-none focus:border-accent"
+                placeholder={t('passwordLabel')}
+              />
 
-            {errorMessage && <p className="text-xs text-red-400">{errorMessage}</p>}
+              {errorMessage && <p className="text-xs text-red-400">{errorMessage}</p>}
 
-            <button
-              type="submit"
-              disabled={status === 'connecting'}
-              className="rounded-xl bg-accent py-2.5 text-sm font-semibold text-white transition hover:bg-accent-soft hover:text-surface disabled:opacity-50"
-            >
-              {status === 'connecting' ? t('connecting') : t('connect')}
-            </button>
+              <button
+                type="submit"
+                disabled={status === 'connecting'}
+                className="rounded-xl bg-accent py-2.5 text-sm font-semibold text-white transition hover:bg-accent-soft hover:text-surface disabled:opacity-50"
+              >
+                {status === 'connecting' ? t('connecting') : t('connect')}
+              </button>
 
-            <p className="text-center text-[11px] text-neutral-600">{t('passwordNote')}</p>
-
-            <details className="group mt-1 text-xs text-neutral-500">
-              <summary className="cursor-pointer select-none list-none text-accent/80 hover:text-accent">
-                {t('howItWorks')}
-              </summary>
-              <ul className="mt-2 flex flex-col gap-1.5 border-l border-surface-border pl-3 font-mono text-[11px] leading-relaxed">
-                <li>{t('step1')}</li>
-                <li>{t('step2')}</li>
-                <li>{t('step3')}</li>
-                <li>{t('step4')}</li>
-              </ul>
-            </details>
-          </form>
+              <details className="group mt-1 text-xs text-neutral-500">
+                <summary className="cursor-pointer select-none list-none text-accent/80 hover:text-accent">
+                  {t('howItWorks')}
+                </summary>
+                <ul className="mt-2 flex flex-col gap-1.5 border-l border-surface-border pl-3 font-mono text-[11px] leading-relaxed">
+                  <li>{t('step1')}</li>
+                  <li>{t('step2')}</li>
+                  <li>{t('step3')}</li>
+                  <li>{t('step4')}</li>
+                </ul>
+              </details>
+            </form>
+          </div>
         )}
 
         {status === 'connected' && widgetId && (
-          <section className="flex flex-col gap-5 rounded-2xl border border-surface-border bg-surface-card p-5">
-            <img src={imageUrl} alt="Mimo stats preview" className="w-full rounded-xl" />
+          <section className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6 sm:flex-row">
+              <aside className="flex w-full shrink-0 flex-col gap-6 sm:w-44">
+                <div className="flex flex-col gap-2">
+                  <span className="text-[11px] font-medium text-neutral-500">{t('theme')}</span>
+                  <div className="grid grid-cols-3 gap-2">
+                    {Object.values(THEMES).map((theme) => (
+                      <button
+                        key={theme.id}
+                        type="button"
+                        onClick={() => setThemeId(theme.id)}
+                        title={theme.name}
+                        className="h-10 rounded-xl border-2 transition"
+                        style={{
+                          background: `linear-gradient(135deg, ${theme.accentFrom}, ${theme.accentTo})`,
+                          borderColor: themeId === theme.id ? '#FFFFFF' : 'transparent',
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
 
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                {Object.values(THEMES).map((theme) => (
-                  <button
-                    key={theme.id}
-                    type="button"
-                    onClick={() => setThemeId(theme.id)}
-                    title={theme.name}
-                    className="h-6 w-6 rounded-full border-2 transition"
-                    style={{
-                      background: `linear-gradient(135deg, ${theme.accentFrom}, ${theme.accentTo})`,
-                      borderColor: themeId === theme.id ? '#FFFFFF' : 'transparent',
-                    }}
-                  />
-                ))}
-              </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[11px] font-medium text-neutral-500">{t('statsToShow')}</span>
+                  <div className="flex flex-col gap-2">
+                    {ALL_STATS.map((key) => {
+                      const active = visibleStats.includes(key);
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => toggleStat(key)}
+                          className={`flex items-center gap-2 rounded-xl border-2 px-3 py-2.5 text-xs font-medium transition ${
+                            active
+                              ? 'border-accent bg-accent/15 text-white'
+                              : 'border-transparent bg-surface-card text-neutral-500 hover:text-neutral-300'
+                          }`}
+                        >
+                          <ChipIcon statKey={key} className="h-4 w-4" />
+                          {t(STAT_LABEL_KEY[key])}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </aside>
 
-              <div className="flex items-center gap-3">
-                {ALL_STATS.map((key) => (
-                  <label key={key} className="flex items-center gap-1 text-[11px] text-neutral-400">
-                    <input
-                      type="checkbox"
-                      checked={visibleStats.includes(key)}
-                      onChange={() => toggleStat(key)}
-                      className="h-3 w-3 accent-accent"
-                    />
-                    {t(STAT_LABEL_KEY[key])}
-                  </label>
-                ))}
+              <div className="flex flex-1 items-center justify-center">
+                <img src={imageUrl} alt="Mimo stats preview" className="w-full rounded-2xl sm:w-[33vw] sm:min-w-[220px]" />
               </div>
             </div>
 
-            <Field label={t('imageUrl')} value={imageUrl} onCopy={() => copyToClipboard(imageUrl, 'image')} copied={copied === 'image'} copyLabel={t('copy')} copiedLabel={t('copied')} />
-            <Field label={t('readmeMarkdown')} value={markdown} onCopy={() => copyToClipboard(markdown, 'markdown')} copied={copied === 'markdown'} copyLabel={t('copy')} copiedLabel={t('copied')} />
+            <div className="flex flex-col gap-3 border-t border-surface-border pt-6">
+              <Field label={t('imageUrl')} value={imageUrl} onCopy={() => copyToClipboard(imageUrl, 'image')} copied={copied === 'image'} copyLabel={t('copy')} copiedLabel={t('copied')} />
+              <Field label={t('readmeMarkdown')} value={markdown} onCopy={() => copyToClipboard(markdown, 'markdown')} copied={copied === 'markdown'} copyLabel={t('copy')} copiedLabel={t('copied')} />
 
-            <button type="button" onClick={handleDisconnect} className="self-start text-[11px] text-red-400/80 hover:text-red-400">
-              {t('disconnect')}
-            </button>
+              <button type="button" onClick={handleDisconnect} className="self-start text-[11px] text-red-400/80 hover:text-red-400">
+                {t('disconnect')}
+              </button>
+            </div>
           </section>
         )}
-
-        <p className="text-center text-[11px] text-neutral-600">{t('footerNote')}</p>
       </div>
     </main>
   );
