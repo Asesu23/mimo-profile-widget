@@ -31,12 +31,9 @@ Mimo has no public API for looking up stats by username, unlike Duolingo. So ins
 
 | Theme | Preview | Theme | Preview |
 | :--- | :--- | :--- | :--- |
-| **Default** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898)
-| **Midnight** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=midnight) |
-| **Sunset** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=sunset)
-| **Forest** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=forest) |
-| **Cyber** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=cyber)
-| **Mono** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=mono) |
+| **Default** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898) | **Midnight** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=midnight) |
+| **Sunset** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=sunset) | **Forest** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=forest) |
+| **Cyber** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=cyber) | **Mono** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=mono) |
 
 ## Usage
 
