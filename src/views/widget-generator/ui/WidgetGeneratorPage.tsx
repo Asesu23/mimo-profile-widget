@@ -1,8 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { THEMES, DEFAULT_THEME_ID } from '@entities/widget-theme';
-import { buildMascot } from '@entities/mascot';
+import { DEFAULT_THEME_ID } from '@entities/widget-theme';
 import { ALL_STATS, type StatKey } from '@entities/widget-stat';
 import { useConnectAccount } from '@features/connect-account';
 import { disconnectAccount } from '@features/disconnect-account';
@@ -22,7 +21,6 @@ export function WidgetGeneratorPage() {
   const [visibleStats, setVisibleStats] = useState<StatKey[]>(ALL_STATS);
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  const activeTheme = THEMES[themeId] ?? THEMES[DEFAULT_THEME_ID];
 
   const imageUrl = useMemo(() => {
     if (!widgetId) return '';
@@ -45,27 +43,43 @@ export function WidgetGeneratorPage() {
     setVisibleStats((current) => toggleStatKey(current, key));
   }
 
+  const header = (
+    <header className="flex flex-col items-center gap-1 text-center">
+      <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>
+      <p className="text-sm text-neutral-500">{t('subtitle')}</p>
+    </header>
+  );
+
   return (
-    <main className="relative min-h-screen overflow-hidden bg-surface px-6 py-16 flex flex-col">
+    <main className="relative flex min-h-screen flex-col overflow-hidden bg-surface px-6 py-16">
       <div
         className="pointer-events-none absolute -right-40 -top-40 h-[480px] w-[480px] rounded-full opacity-20 blur-[120px]"
         style={{ background: 'radial-gradient(circle, #D946EF, transparent 70%)' }}
       />
 
-      <div className="relative mx-auto flex w-full max-w-4xl flex-1 flex-col gap-8">
-        <header className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 shrink-0" dangerouslySetInnerHTML={{ __html: buildMascot(activeTheme) }} />
-            <div className="flex flex-col gap-1">
-              <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>
-              <p className="text-sm text-neutral-500">{t('subtitle')}</p>
-            </div>
-          </div>
-          <LocaleSwitch locale={locale} onToggle={() => setLocale(locale === 'en' ? 'ru' : 'en')} />
-        </header>
+      <div className="absolute right-6 top-6 z-10">
+        <LocaleSwitch locale={locale} onToggle={() => setLocale(locale === 'en' ? 'ru' : 'en')} />
+      </div>
 
-        {status !== 'connected' && (
-          <div className="flex flex-1 items-center justify-center">
+      <div className="relative mx-auto flex w-full max-w-4xl flex-1 flex-col gap-8">
+        {status === 'connected' && widgetId ? (
+          <>
+            {header}
+            <section className="flex flex-col gap-8">
+              <WidgetPreview
+                themeId={themeId}
+                onThemeChange={setThemeId}
+                visibleStats={visibleStats}
+                onToggleStat={toggleStat}
+                imageUrl={imageUrl}
+                t={t}
+              />
+              <WidgetLinks imageUrl={imageUrl} markdown={markdown} onDisconnect={handleDisconnect} t={t} />
+            </section>
+          </>
+        ) : (
+          <div className="flex flex-1 flex-col items-center justify-center gap-8">
+            {header}
             <div className="w-full max-w-lg">
               <ConnectForm
                 email={email}
@@ -79,20 +93,6 @@ export function WidgetGeneratorPage() {
               />
             </div>
           </div>
-        )}
-
-        {status === 'connected' && widgetId && (
-          <section className="flex flex-col gap-8">
-            <WidgetPreview
-              themeId={themeId}
-              onThemeChange={setThemeId}
-              visibleStats={visibleStats}
-              onToggleStat={toggleStat}
-              imageUrl={imageUrl}
-              t={t}
-            />
-            <WidgetLinks imageUrl={imageUrl} markdown={markdown} onDisconnect={handleDisconnect} t={t} />
-          </section>
         )}
       </div>
     </main>
