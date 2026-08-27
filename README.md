@@ -22,11 +22,7 @@ A live SVG badge for your GitHub README that pulls your [Mimo](https://mimo.org)
 Mimo has no public API for looking up stats by username, unlike Duolingo. So instead of a `?username=` query param, you connect your account once through the site and get a stable widget link back.
 
 <div align="center">
-  <img src="img/connect-placeholder.png" alt="Connect account screen" width="75%" style="border-radius: 15px; border: 1px solid #37464f;" />
-</div>
-
-<div align="center">
-  <img src="img/preview-placeholder.png" alt="Widget preview and theme picker" width="75%" style="border-radius: 15px; border: 1px solid #37464f;" />
+  <img src="img/preview.png" alt="Widget preview and theme picker" width="75%" style="border-radius: 15px; border: 1px solid #37464f;" />
 </div>
 
 👉 **[Open the app](https://mimo-profile-widget.vercel.app)**
@@ -35,9 +31,12 @@ Mimo has no public API for looking up stats by username, unlike Duolingo. So ins
 
 | Theme | Preview | Theme | Preview |
 | :--- | :--- | :--- | :--- |
-| **Default** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898) | **Midnight** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=midnight) |
-| **Sunset** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=sunset) | **Forest** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=forest) |
-| **Cyber** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=cyber) | **Mono** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=mono) |
+| **Default** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898)
+| **Midnight** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=midnight) |
+| **Sunset** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=sunset)
+| **Forest** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=forest) |
+| **Cyber** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=cyber)
+| **Mono** | ![](https://mimo-profile-widget.vercel.app/api/widget/d6be51ad-166b-4f0f-96fd-65c2ede21898?theme=mono) |
 
 ## Usage
 
